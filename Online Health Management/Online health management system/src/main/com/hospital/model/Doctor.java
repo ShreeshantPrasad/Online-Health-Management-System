@@ -6,6 +6,12 @@ public class Doctor {
     private String specialization;
     private String contact;
 
+    public Doctor(String name, String specialization, String contact) {
+        this.name = name;
+        this.specialization = specialization;
+        this.contact = contact;
+    }
+
     // Getters and Setters
     public int getId() {
         return id;

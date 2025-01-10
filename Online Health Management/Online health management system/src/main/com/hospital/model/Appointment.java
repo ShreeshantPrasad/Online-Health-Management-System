@@ -8,6 +8,12 @@ public class Appointment {
     private int doctorId;
     private Timestamp appointmentDate;
 
+    public Appointment(int patientId, int doctorId, Timestamp appointmentDate) {
+        this.patientId = patientId;
+        this.doctorId = doctorId;
+        this.appointmentDate = appointmentDate;
+    }
+
     // Getters and Setters
     public int getId() {
         return id;

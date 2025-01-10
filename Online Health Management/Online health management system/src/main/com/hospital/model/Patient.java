@@ -7,6 +7,13 @@ public class Patient {
     private String gender;
     private String contact;
 
+    public Patient(String name, int age, String gender, String contact) {
+        this.name = name;
+        this.age = age;
+        this.gender = gender;
+        this.contact = contact;
+    }
+
     // Getters and Setters
     public int getId() {
         return id;
