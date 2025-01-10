@@ -14,12 +14,12 @@ public class PatientDAO {
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setString(1, patient.getName());
             pstmt.setInt(2, patient.getAge());
-            pstmt.setString(3, patient.getGender());
+            pstmt.setString (3, patient.getGender());
             pstmt.setString(4, patient.getContact());
             pstmt.executeUpdate();
         } catch (SQLException e) {
-            // Log the exception or handle it accordingly
-            System.err.println("Error adding patient: " + e.getMessage());
+            e.printStackTrace();
+            throw new RuntimeException("Error adding patient: " + e.getMessage());
         }
     }
 
@@ -30,46 +30,14 @@ public class PatientDAO {
              Statement stmt = conn.createStatement();
              ResultSet rs = stmt.executeQuery(sql)) {
             while (rs.next()) {
-                Patient patient = new Patient();
+                Patient patient = new Patient(rs.getString("name"), rs.getInt("age"), rs.getString("gender"), rs.getString("contact"));
                 patient.setId(rs.getInt("id"));
-                patient.setName(rs.getString("name"));
-                patient.setAge(rs.getInt("age"));
-                patient.setGender(rs.getString("gender"));
-                patient.setContact(rs.getString("contact"));
                 patients.add(patient);
             }
         } catch (SQLException e) {
-            // Log the exception or handle it accordingly
-            System.err.println("Error retrieving patients: " + e.getMessage());
+            e.printStackTrace();
+            throw new RuntimeException("Error retrieving patients: " + e.getMessage());
         }
         return patients;
-    }
-
-    public void updatePatient(Patient patient) {
-        String sql = "UPDATE Patients SET name = ?, age = ?, gender = ?, contact = ? WHERE id = ?";
-        try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            pstmt.setString(1, patient.getName());
-            pstmt.setInt(2, patient.getAge());
-            pstmt.setString(3, patient.getGender());
-            pstmt.setString(4, patient.getContact());
-            pstmt.setInt(5, patient.getId());
-            pstmt.executeUpdate();
-        } catch (SQLException e) {
-            // Log the exception or handle it accordingly
-            System.err.println("Error updating patient: " + e.getMessage());
-        }
-    }
-
-    public void deletePatient(int id) {
-        String sql = "DELETE FROM Patients WHERE id = ?";
-        try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            pstmt.setInt(1, id);
-            pstmt.executeUpdate();
-        } catch (SQLException e) {
-            // Log the exception or handle it accordingly
-            System.err.println("Error deleting patient: " + e.getMessage());
-        }
     }
 }

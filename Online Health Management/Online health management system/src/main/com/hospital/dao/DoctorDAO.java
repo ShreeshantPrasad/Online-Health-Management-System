@@ -17,7 +17,8 @@ public class DoctorDAO {
             pstmt.setString(3, doctor.getContact());
             pstmt.executeUpdate();
         } catch (SQLException e) {
-            System.err.println("Error adding doctor: " + e.getMessage());
+            e.printStackTrace();
+            throw new RuntimeException("Error adding doctor: " + e.getMessage());
         }
     }
 
@@ -28,15 +29,13 @@ public class DoctorDAO {
              Statement stmt = conn.createStatement();
              ResultSet rs = stmt.executeQuery(sql)) {
             while (rs.next()) {
-                Doctor doctor = new Doctor();
+                Doctor doctor = new Doctor(rs.getString("name"), rs.getString("specialization"), rs.getString("contact"));
                 doctor.setId(rs.getInt("id"));
-                doctor.setName(rs.getString("name"));
-                doctor.setSpecialization(rs.getString("specialization"));
-                doctor.setContact(rs.getString("contact"));
                 doctors.add(doctor);
             }
         } catch (SQLException e) {
-            System.err.println("Error retrieving doctors: " + e.getMessage());
+            e.printStackTrace();
+            throw new RuntimeException("Error retrieving doctors: " + e.getMessage());
         }
         return doctors;
     }

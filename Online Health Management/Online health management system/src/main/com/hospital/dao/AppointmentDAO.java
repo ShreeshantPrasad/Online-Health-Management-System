@@ -8,8 +8,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class AppointmentDAO {
-    public void addAppointment(Appointment appointment) {
-        String sql = "INSERT INTO Appointments (patient_id, doctor_id, appointment_date) VALUES (?, ?, ?)";
+    public void scheduleAppointment(Appointment appointment) {
+        String sql = "INSERT INTO Appointments (patientId, doctorId, appointmentDate) VALUES (?, ?, ?)";
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setInt(1, appointment.getPatientId());
@@ -17,7 +17,8 @@ public class AppointmentDAO {
             pstmt.setTimestamp(3, appointment.getAppointmentDate());
             pstmt.executeUpdate();
         } catch (SQLException e) {
-            System.err.println("Error adding appointment: " + e.getMessage());
+            e.printStackTrace();
+            throw new RuntimeException("Error scheduling appointment: " + e.getMessage());
         }
     }
 
@@ -28,15 +29,13 @@ public class AppointmentDAO {
              Statement stmt = conn.createStatement();
              ResultSet rs = stmt.executeQuery(sql)) {
             while (rs.next()) {
-                Appointment appointment = new Appointment();
+                Appointment appointment = new Appointment(rs.getInt("patientId"), rs.getInt("doctorId"), rs.getTimestamp("appointmentDate"));
                 appointment.setId(rs.getInt("id"));
-                appointment.setPatientId(rs.getInt("patient_id"));
-                appointment.setDoctorId(rs.getInt("doctor_id"));
-                appointment.setAppointmentDate(rs.getTimestamp("appointment_date"));
                 appointments.add(appointment);
             }
         } catch (SQLException e) {
-            System.err.println("Error retrieving appointments: " + e.getMessage());
+            e.printStackTrace();
+            throw new RuntimeException("Error retrieving appointments: " + e.getMessage());
         }
         return appointments;
     }
